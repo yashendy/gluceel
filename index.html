@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة أبطال السكري - تسجيل الدخول</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="main-container">
+        
+        <div class="branding-section">
+            <h1 class="logo-text">سكري كيدز 🩺</h1>
+            <p class="motivation-text">
+                منصة متكاملة لمتابعة صحة أطفالنا الأبطال.<br>
+                راقب قياسات السكر، نظم الوجبات الصحية،<br>
+                متابعة تقارير ذكية لحياة آمنة ومستقبل أفضل.
+            </p>
+        </div>
+
+        <div class="login-section">
+            <div class="login-card">
+                <form id="loginForm">
+                    <input type="email" id="loginEmail" placeholder="البريد الإلكتروني أو رقم الهاتف" required>
+                    <input type="password" id="loginPassword" placeholder="كلمة السر" required>
+                    
+                    <button type="submit" class="btn-login">تسجيل الدخول</button>
+                    
+                    <a href="#" class="forgot-link">هل نسيت كلمة السر؟</a>
+                    
+                    <div class="divider"></div>
+                    
+                    <a href="register.html" class="btn-create">إنشاء حساب جديد</a>
+                </form>
+            </div>
+            
+            <div id="toast" style="display:none; margin-top:10px; color:red;"></div>
+        </div>
+    </div>
+
+    <script type="module" src="js/auth.js"></script>
+
+</body>
+</html>
