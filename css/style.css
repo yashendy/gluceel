@@ -1,0 +1,146 @@
+/* css/style.css */
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
+
+:root {
+    --primary-color: #1877f2; /* أزرق فيسبوك */
+    --secondary-color: #42b72a; /* أخضر زر الإنشاء */
+    --bg-color: #f0f2f5;
+    --text-color: #1c1e21;
+}
+
+body {
+    font-family: 'Tajawal', sans-serif;
+    background-color: var(--bg-color);
+    margin: 0;
+    padding: 0;
+    direction: rtl; /* اتجاه عربي */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* الحاوية الرئيسية */
+.main-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 1000px;
+    width: 100%;
+    padding: 20px;
+    gap: 50px; /* مسافة بين النص والكارت */
+}
+
+/* الجزء اليمين: النصوص والتحفيز */
+.branding-section {
+    flex: 1;
+    max-width: 500px;
+}
+
+.logo-text {
+    font-size: 3.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.motivation-text {
+    font-size: 1.6rem;
+    line-height: 1.6;
+    color: var(--text-color);
+}
+
+/* الجزء اليسار: كارت الدخول */
+.login-section {
+    flex: 0.8;
+    max-width: 400px;
+}
+
+.login-card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.login-card input {
+    width: 90%; /* عشان الحواف */
+    padding: 14px 16px;
+    margin-bottom: 15px;
+    border: 1px solid #dddfe2;
+    border-radius: 6px;
+    font-size: 17px;
+    font-family: 'Tajawal', sans-serif;
+}
+
+.login-card input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 2px #e7f3ff;
+}
+
+.btn-login {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-login:hover {
+    background-color: #166fe5;
+}
+
+.forgot-link {
+    display: block;
+    margin-top: 15px;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.divider {
+    border-bottom: 1px solid #dadde1;
+    margin: 20px 0;
+}
+
+.btn-create {
+    background-color: var(--secondary-color);
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-create:hover {
+    background-color: #36a420;
+}
+
+/* التجاوب مع الموبايل */
+@media (max-width: 900px) {
+    .main-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+    }
+    .branding-section {
+        padding-bottom: 20px;
+    }
+    .logo-text {
+        font-size: 2.5rem;
+    }
+    .motivation-text {
+        font-size: 1.2rem;
+    }
+}
