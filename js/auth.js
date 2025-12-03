@@ -1,154 +1,117 @@
-// js/auth.js
 import { supabase } from './supabase-config.js';
 
-/* ========== عناصر الواجهة ========== */
+// عناصر الواجهة
 const loginForm = document.getElementById('loginForm');
-const regForm   = document.getElementById('registerForm');
-const toastEl   = document.getElementById('toast');
+const regForm = document.getElementById('registerForm');
+const toastEl = document.getElementById('toast');
 
-/* ========== أدوات مساعدة ========== */
+// دالة عرض الرسائل
 const showToast = (msg, isError = false) => {
   if (!toastEl) { alert(msg); return; }
   toastEl.textContent = msg;
-  toastEl.style.backgroundColor = isError ? '#e53e3e' : '#333'; // أحمر للخطأ
-  toastEl.style.display = 'block'; // تأكدنا من إظهاره
-  setTimeout(() => toastEl.style.display = 'none', 4000);
+  toastEl.style.backgroundColor = isError ? '#dc3545' : '#198754';
+  toastEl.style.display = 'block';
+  setTimeout(() => toastEl.style.display = 'none', 3000);
 };
 
-// التوجيه حسب الدور والحالة
+// التوجيه
 function routeByRole(role, status) {
-  // 1. لو الحساب لسه معلق (pending)
   if (status === 'pending') {
-    // ممكن توجهه لصفحة انتظار أو تظهر رسالة وتعمل خروج
-    document.body.innerHTML = `
-      <div style="text-align:center; padding:50px; font-family:'Tajawal',sans-serif;">
-        <h1>⏳ الحساب قيد المراجعة</h1>
-        <p>شكراً لتسجيلك يا دكتور. سيقوم المسؤول بمراجعة بياناتك وتفعيل الحساب قريباً.</p>
-        <a href="index.html" onclick="sessionStorage.clear()">العودة للرئيسية</a>
-      </div>
-    `;
-    supabase.auth.signOut(); // تسجيل خروج عشان ما يفضلش معلق
+    document.body.innerHTML = '<h1 style="text-align:center; margin-top:50px;">⏳ الحساب قيد المراجعة</h1>';
+    supabase.auth.signOut();
     return;
   }
-
-  // 2. التوجيه الطبيعي للحسابات المفعلة
-  switch ((role || '').toLowerCase()) {
-    case 'admin':  location.replace('admin-doctors.html'); break;
+  switch (role) {
+    case 'admin': location.replace('admin-doctors.html'); break;
     case 'doctor': location.replace('doctor-dashboard.html'); break;
     case 'parent': location.replace('parent.html'); break;
-    default:       location.replace('index.html');
+    default: location.replace('index.html');
   }
 }
 
-/* ========== الوظائف الرئيسية ========== */
-
-// 1. تسجيل مستخدم جديد
+// 1. تسجيل حساب جديد (Sign Up)
 async function handleSignUp(email, password, name, role) {
   try {
-    // تحديد الحالة المبدئية: الطبيب = pending، الولي = active
-    const initialStatus = (role === 'doctor') ? 'pending' : 'active';
-
-    // أ. إنشاء الحساب في Supabase Auth
-    const { data: authData, error: authError } = await supabase.auth.signUp({
+    // كل اللي بنعمله نبعت البيانات لـ Supabase Auth
+    // والداتا بيس هتتصرف في الباقي (Trigger)
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { full_name: name } }
+      options: {
+        data: {
+          full_name: name,
+          role: role // بنبعت الدور هنا عشان التريجر يلقطه
+        }
+      }
     });
 
-    if (authError) throw authError;
+    if (error) throw error;
 
-    // ب. إدخال البيانات في جدول users
-    const { error: dbError } = await supabase.from('users').insert([
-      {
-        email: email,
-        name: name,
-        role: role, 
-        auth_id: authData.user.id,
-        status: initialStatus, // تسجيل الحالة
-        is_active: true
-      }
-    ]);
-
-    if (dbError) {
-      console.error('DB Insert Error:', dbError);
-      throw new Error('فشل في حفظ بيانات المستخدم الشخصية.');
-    }
-
-    showToast('تم إنشاء الحساب بنجاح! جاري التوجيه...');
+    showToast('تم إنشاء الحساب بنجاح! جاري الدخول...');
     
-    // توجيه بناءً على الحالة
-    setTimeout(() => routeByRole(role, initialStatus), 1500);
+    // نستنى ثانية عشان التريجر يلحق يكتب البيانات في القاعدة
+    setTimeout(async () => {
+       await checkAuth(); // نعيد التحقق عشان نوجهه
+    }, 1500);
 
   } catch (err) {
     console.error(err);
-    showToast(`خطأ: ${err.message}`, true);
+    showToast(err.message, true);
   }
 }
 
-// 2. تسجيل الدخول
+// 2. تسجيل الدخول (Login)
 async function handleLogin(email, password) {
   try {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
 
-    // جلب بيانات الدور والحالة من جدول users
-    const { data: userProfile, error: profileError } = await supabase
-      .from('users')
-      .select('role, id, status')
-      .eq('auth_id', data.user.id)
-      .single();
-
-    if (profileError || !userProfile) throw new Error('لم يتم العثور على بيانات المستخدم');
-
-    sessionStorage.setItem('db_user_id', userProfile.id);
-
-    showToast('تم تسجيل الدخول ✅');
-    routeByRole(userProfile.role, userProfile.status);
+    showToast('تم تسجيل الدخول!');
+    checkAuth(); // التوجيه يتم هنا
 
   } catch (err) {
-    console.error(err);
-    showToast('البريد أو كلمة المرور غير صحيحة', true);
+    showToast('بيانات الدخول غير صحيحة', true);
   }
 }
 
-/* ========== تفعيل النماذج ========== */
+// 3. التحقق والتوجيه
+async function checkAuth() {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session) {
+    // نجيب الدور من جدول public.users
+    const { data: user, error } = await supabase
+      .from('users')
+      .select('role, status, id')
+      .eq('auth_id', session.user.id)
+      .single();
 
+    if (user) {
+      sessionStorage.setItem('db_user_id', user.id); // نحفظ الـ ID للاستخدام لاحقاً
+      routeByRole(user.role, user.status);
+    }
+  }
+}
+
+// تفعيل الأزرار
 if (regForm) {
-  regForm.addEventListener('submit', async (e) => {
+  regForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    const name = document.getElementById('regName').value;
-    const email = document.getElementById('regEmail').value;
-    const pass = document.getElementById('regPassword').value;
-    const roleEl = document.querySelector('input[name="role"]:checked');
-    const role = roleEl ? roleEl.value : 'parent';
-    
-    await handleSignUp(email, pass, name, role);
+    const role = document.querySelector('input[name="role"]:checked')?.value || 'parent';
+    handleSignUp(
+      document.getElementById('regEmail').value,
+      document.getElementById('regPassword').value,
+      document.getElementById('regName').value,
+      role
+    );
   });
 }
 
 if (loginForm) {
-  loginForm.addEventListener('submit', async (e) => {
+  loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    const email = document.getElementById('loginEmail').value;
-    const pass = document.getElementById('loginPassword').value;
-    await handleLogin(email, pass);
+    handleLogin(
+      document.getElementById('loginEmail').value,
+      document.getElementById('loginPassword').value
+    );
   });
 }
-
-// التحقق عند فتح الصفحة (لو المستخدم عامل login من قبل)
-async function checkAuth() {
-  const { data: { session } } = await supabase.auth.getSession();
-  const isAuthPage = /login\.html|register\.html|index\.html/.test(location.pathname);
-  
-  if (session && isAuthPage) {
-     const { data: user } = await supabase
-       .from('users')
-       .select('role, status')
-       .eq('auth_id', session.user.id)
-       .single();
-     
-     if(user) routeByRole(user.role, user.status);
-  }
-}
-
-checkAuth();
