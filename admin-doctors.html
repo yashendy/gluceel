@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>طلبات تفعيل الأطباء</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { display: block; background: #f7f9fb; }
+    .navbar { background: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+    .nav-logo { font-size: 1.4rem; font-weight: bold; color: var(--primary-color); }
+    .logout-btn { background: none; border: none; color: #dc3545; cursor: pointer; font-size: 1rem; display: flex; align-items: center; gap: 5px; }
+
+    .page-container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+    .card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.06); margin-bottom: 20px; }
+    .card h2 { margin-top: 0; color: #222; }
+
+    .requests-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
+    .request-item { border: 1px solid #e5e7eb; border-radius: 10px; padding: 15px; background: #fafafa; position: relative; }
+    .request-item h3 { margin: 0 0 5px; }
+    .request-item p { margin: 3px 0; color: #555; }
+    .status { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.85rem; background: #fff3cd; color: #856404; margin-top: 8px; }
+    .actions { margin-top: 12px; display: flex; gap: 10px; }
+    .btn-approve { flex: 1; background: var(--secondary-color); color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; }
+    .btn-refresh { background: var(--primary-color); color: white; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; }
+    #toast { display:none; margin-top:10px; }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-logo">لوحة الإدارة - سكري كيدز</div>
+    <button id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> خروج</button>
+  </nav>
+
+  <div class="page-container">
+    <div class="card" style="display:flex; justify-content:space-between; align-items:center; gap:15px; flex-wrap:wrap;">
+      <div>
+        <h2>طلبات تفعيل الأطباء</h2>
+        <p style="color:#555; margin:0;">راجع الحسابات المسجلة كأطباء وقم بتفعيلها.</p>
+      </div>
+      <button id="refreshBtn" class="btn-refresh"><i class="fas fa-rotate"></i> تحديث القائمة</button>
+    </div>
+
+    <div class="card">
+      <div id="requests" class="requests-grid">
+        <p style="grid-column:1/-1; text-align:center; color:#777;">جاري تحميل الطلبات...</p>
+      </div>
+      <div id="toast"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { supabase } from './js/supabase-config.js';
+
+    const requestsGrid = document.getElementById('requests');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const toast = document.getElementById('toast');
+
+    const showToast = (msg, isError = false) => {
+      toast.style.display = 'block';
+      toast.style.color = isError ? 'red' : 'green';
+      toast.textContent = msg;
+    };
+
+    async function ensureAdmin() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        window.location.href = 'index.html';
+        return null;
+      }
+
+      const { data, error } = await supabase
+        .from('users')
+        .select('role')
+        .eq('id', session.user.id)
+        .single();
+
+      if (error || data?.role !== 'admin') {
+        window.location.href = 'index.html';
+        return null;
+      }
+
+      return session.user;
+    }
+
+    async function loadRequests() {
+      const user = await ensureAdmin();
+      if (!user) return;
+
+      requestsGrid.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:#777;">جاري التحميل...</p>';
+
+      const { data: doctors, error } = await supabase
+        .from('users')
+        .select('id,name,email,status')
+        .eq('role', 'doctor')
+        .eq('status', 'pending')
+        .order('created_at', { ascending: true });
+
+      if (error) {
+        console.error(error);
+        requestsGrid.innerHTML = '<p style="color:red;">فشل تحميل البيانات</p>';
+        showToast('حدث خطأ أثناء تحميل الطلبات', true);
+        return;
+      }
+
+      if (!doctors || doctors.length === 0) {
+        requestsGrid.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:#777;">لا توجد طلبات حالياً</p>';
+        return;
+      }
+
+      requestsGrid.innerHTML = '';
+      doctors.forEach((doc) => {
+        const card = document.createElement('div');
+        card.className = 'request-item';
+        card.innerHTML = `
+          <h3>${doc.name || 'طبيب بدون اسم'}</h3>
+          <p><i class="fas fa-envelope"></i> ${doc.email}</p>
+          <span class="status">${doc.status === 'pending' ? 'قيد المراجعة' : doc.status}</span>
+          <div class="actions">
+            <button class="btn-approve" data-id="${doc.id}"><i class="fas fa-check"></i> تفعيل</button>
+          </div>
+        `;
+        requestsGrid.appendChild(card);
+      });
+    }
+
+    async function approveDoctor(userId) {
+      const { error } = await supabase
+        .from('users')
+        .update({ status: 'active' })
+        .eq('id', userId)
+        .eq('role', 'doctor');
+
+      if (error) {
+        showToast('فشل التفعيل: ' + error.message, true);
+      } else {
+        showToast('تم تفعيل الحساب بنجاح');
+        loadRequests();
+      }
+    }
+
+    requestsGrid.addEventListener('click', (e) => {
+      const approveBtn = e.target.closest('.btn-approve');
+      if (approveBtn) {
+        const id = approveBtn.getAttribute('data-id');
+        approveDoctor(id);
+      }
+    });
+
+    refreshBtn.addEventListener('click', loadRequests);
+
+    logoutBtn.addEventListener('click', async () => {
+      await supabase.auth.signOut();
+      window.location.href = 'index.html';
+    });
+
+    loadRequests();
+  </script>
+</body>
+</html>
+doctor-dashboard.html
+New
++181
+-0
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>عيادة الطبيب</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { display: block; background: #f6f8fb; }
+    .navbar { background: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+    .nav-logo { font-size: 1.4rem; font-weight: bold; color: var(--primary-color); }
+    .logout-btn { background: none; border: none; color: #dc3545; cursor: pointer; font-size: 1rem; display: flex; align-items: center; gap: 5px; }
+
+    .page-container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+    .card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.06); }
+    .card h3 { margin-top: 0; color: #222; }
+    .patient-item, .reading-item, .appointment-item { border-bottom: 1px solid #eee; padding: 10px 0; }
+    .patient-item:last-child, .reading-item:last-child, .appointment-item:last-child { border-bottom: none; }
+    .tag { display: inline-block; padding: 4px 10px; background: #e7f3ff; color: var(--primary-color); border-radius: 12px; font-size: 0.85rem; }
+    .empty { color: #777; text-align: center; padding: 15px 0; }
+    #toast { display:none; margin-top:10px; }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-logo">عيادة الطبيب - سكري كيدز</div>
+    <button id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> خروج</button>
+  </nav>
+
+  <div class="page-container">
+    <div class="card" style="margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+      <div>
+        <h2 style="margin:0;">مرحباً بطبيبنا العزيز 👨‍⚕️</h2>
+        <p style="margin:4px 0 0; color:#555;">يمكنك متابعة مرضاك وقراءات السكر وحجوزات المواعيد من هنا.</p>
+      </div>
+      <div id="toast"></div>
+    </div>
+
+    <div class="grid">
+      <div class="card" id="patientsCard">
+        <h3><i class="fas fa-users"></i> مرضاي</h3>
+        <div id="patientsList" class="empty">جاري تحميل القائمة...</div>
+      </div>
+
+      <div class="card" id="readingsCard">
+        <h3><i class="fas fa-chart-line"></i> آخر القراءات</h3>
+        <div id="readingsList" class="empty">سيتم عرض أحدث قراءات السكر هنا.</div>
+      </div>
+
+      <div class="card" id="appointmentsCard">
+        <h3><i class="fas fa-calendar"></i> المواعيد القادمة</h3>
+        <div id="appointmentsList" class="empty">لا توجد مواعيد مسجلة بعد.</div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { supabase } from './js/supabase-config.js';
+
+    const patientsList = document.getElementById('patientsList');
+    const readingsList = document.getElementById('readingsList');
+    const appointmentsList = document.getElementById('appointmentsList');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const toast = document.getElementById('toast');
+
+    const showToast = (msg, isError = false) => {
+      toast.style.display = 'block';
+      toast.style.color = isError ? 'red' : 'green';
+      toast.textContent = msg;
+    };
+
+    async function ensureDoctor() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        window.location.href = 'index.html';
+        return null;
+      }
+
+      const { data, error } = await supabase
+        .from('users')
+        .select('role,status,name')
+        .eq('id', session.user.id)
+        .single();
+
+      if (error || data?.role !== 'doctor') {
+        window.location.href = 'index.html';
+        return null;
+      }
+
+      if (data.status !== 'active') {
+        showToast('حساب الطبيب في انتظار التفعيل من الإدارة.', true);
+        return null;
+      }
+
+      return { session, profile: data };
+    }
+
+    async function loadPatients(doctorId) {
+      const { data, error } = await supabase
+        .from('child_profiles')
+        .select('id,name,diabetes_type,gender,birth_date')
+        .eq('doctor_id', doctorId);
+
+      if (error) {
+        console.warn('خطأ في جلب المرضى أو لا يوجد حقل doctor_id:', error);
+        patientsList.textContent = 'تعذر تحميل قائمة المرضى.';
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        patientsList.textContent = 'لا يوجد مرضى مرتبطون بحسابك بعد.';
+        patientsList.className = 'empty';
+        return;
+      }
+
+      patientsList.innerHTML = '';
+      data.forEach((patient) => {
+        const item = document.createElement('div');
+        item.className = 'patient-item';
+        const type = patient.diabetes_type === 'type1' ? 'النوع الأول' : 'النوع الثاني';
+        const avatar = patient.gender === 'female' ? '👧' : '👦';
+        item.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+            <div>
+              <div style="font-weight:bold;">${avatar} ${patient.name}</div>
+              <div style="color:#666; font-size:0.9rem;">${type}</div>
+            </div>
+            <span class="tag">${new Date(patient.birth_date).getFullYear()}</span>
+          </div>
+        `;
+        patientsList.appendChild(item);
+      });
+    }
+
+    function loadSampleReadings() {
+      const sample = [
+        { child: 'سارة', value: '110 mg/dL', time: 'اليوم 09:00' },
+        { child: 'محمد', value: '165 mg/dL', time: 'اليوم 07:30' },
+        { child: 'ليلى', value: '140 mg/dL', time: 'أمس 22:15' }
+      ];
+      readingsList.innerHTML = '';
+      sample.forEach((row) => {
+        const item = document.createElement('div');
+        item.className = 'reading-item';
+        item.innerHTML = `<strong>${row.child}</strong> - ${row.value}<div style="color:#666; font-size:0.9rem;">${row.time}</div>`;
+        readingsList.appendChild(item);
+      });
+    }
+
+    function loadSampleAppointments() {
+      const sample = [
+        { child: 'عمر', time: 'الأربعاء 3:00 م', note: 'متابعة جرعات الإنسولين' },
+        { child: 'سارة', time: 'الخميس 12:30 م', note: 'مراجعة التحليل الدوري' }
+      ];
+      appointmentsList.innerHTML = '';
+      sample.forEach((row) => {
+        const item = document.createElement('div');
+        item.className = 'appointment-item';
+        item.innerHTML = `<strong>${row.child}</strong><div style="color:#666; font-size:0.9rem;">${row.time}</div><div style="color:#888; font-size:0.9rem;">${row.note}</div>`;
+        appointmentsList.appendChild(item);
+      });
+    }
+
+    logoutBtn.addEventListener('click', async () => {
+      await supabase.auth.signOut();
+      window.location.href = 'index.html';
+    });
+
+    (async () => {
+      const result = await ensureDoctor();
+      if (!result) return;
+
+      await loadPatients(result.session.user.id);
+      loadSampleReadings();
+      loadSampleAppointments();
+    })();
+  </script>
+</body>
+</html>
