@@ -11,6 +11,20 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+<body class="login-page">
+  <div class="page-shell">
+    <section class="page-hero">
+      <div class="brand-mark">سكري كيدز <span aria-hidden="true">🩺</span></div>
+      <h1>مرحبًا بكم في سكري كيدز</h1>
+      <p class="lede">
+        تسجيل دخول واحد ينقلك إلى المسار الصحيح: لوحة المشرف، عيادة الطبيب، أو لوحة ولي الأمر.
+      </p>
+      <ul class="hero-list">
+        <li><strong>المشرف:</strong> متابعة طلبات الأطباء وتفعيلهم مباشرة.</li>
+        <li><strong>الطبيب:</strong> دخول لوحة العيادة فور التفعيل مع تنبيه للطلبات المعلقة.</li>
+        <li><strong>ولي الأمر:</strong> استعراض بيانات طفلك وجدول المواعيد بسهولة.</li>
+      </ul>
+    </section>
 
     <div class="main-container">
         
@@ -21,25 +35,14 @@
                 راقب قياسات السكر، نظم الوجبات الصحية،<br>
                 واحصل على تقارير ذكية لحياة آمنة ومستقبل أفضل.
             </p>
-<body class="login-page">
-  <div class="login-shell">
-    <section class="hero">
-      <div class="brand-mark">سكري كيدز <span aria-hidden="true">🩺</span></div>
-      <h1>منصة متكاملة لمتابعة صحة أطفالنا الأبطال</h1>
-      <p class="lede">
-        راقب قياسات السكر لحظة بلحظة، نظم الوجبات الصحية، وشارك التقارير الذكية مع الفريق الطبي
-        ليحصل الطفل على رعاية مطمئنة ومستقبل أفضل.
-      </p>
-
-      <div class="hero-grid">
-        <div class="hero-card">
-          <h2>تجربة مخصصة لكل دور</h2>
-          <ul class="bullet-list">
-            <li><strong>المشرف:</strong> يدخل فورًا إلى مراجعة الأطباء المعلقين وتفعيلهم.</li>
-            <li><strong>الطبيب:</strong> ينتقل إلى لوحة العيادة عند التفعيل، مع تنبيه واضح في حالة الانتظار.</li>
-            <li><strong>ولي الأمر:</strong> يتابع أطفاله عبر لوحة المتابعة وجدول المواعيد.</li>
-          </ul>
         </div>
+    <main class="auth-panel single-card">
+      <div class="auth-card">
+        <header class="auth-header">
+          <p class="badge">تسجيل الدخول</p>
+          <h2>حساب واحد لكل دور</h2>
+          <p class="subhead">أدخل بياناتك للمتابعة.</p>
+        </header>
 
         <div class="login-section">
             <div class="login-card">
@@ -58,30 +61,11 @@
             </div>
             
             <div id="toast" style="display:none; margin-top:10px; color:red;"></div>
-        <div class="hero-card info">
-          <h2>بيانات نحتاجها لإتقان التصميم</h2>
-          <ul class="bullet-list">
-            <li>شعار عالي الدقة (PNG/SVG) وألوان الهوية المعتمدة.</li>
-            <li>روابط السياسات (الخصوصية، الشروط) أو رقم دعم فني.</li>
-            <li>نص موجز للتعريف بالمنصة/العيادة وشهادة ثقة إن وُجدت.</li>
-            <li>صورة خلفية أو رمز تعبيري مميز لاستخدامه في الواجهة.</li>
-          </ul>
-          <p class="note">يمكن استبدال العناصر الحالية بهذه البيانات فور تزويدها.</p>
         </div>
     </div>
-      </div>
-    </section>
-
-    <main class="auth-panel">
-      <div class="auth-card">
-        <header class="auth-header">
-          <p class="badge">دخول آمن</p>
-          <h2>مرحبًا بكم في سكري كيدز</h2>
-          <p class="subhead">أدخل بياناتك للانتقال إلى المسار المناسب لحسابك.</p>
-        </header>
-
         <div id="authStatus" class="status-banner" aria-live="polite"></div>
 
+    <script type="module" src="js/auth.js"></script>
         <form id="loginForm" class="login-form">
           <label class="field">
             <span>البريد الإلكتروني</span>
@@ -92,22 +76,15 @@
             <input type="password" id="loginPassword" placeholder="••••••••" required>
           </label>
 
-          <button type="submit" class="btn primary">تسجيل الدخول</button>
+          <button type="submit" class="btn primary">دخول</button>
 
           <div class="links-row">
             <a href="#" class="text-link">هل نسيت كلمة السر؟</a>
             <a href="register.html" class="text-link">إنشاء حساب جديد</a>
           </div>
         </form>
-
-        <section class="compact-grid">
-          <div class="pill">تحويل تلقائي حسب الدور</div>
-          <div class="pill">تنبيه انتظار تفعيل الطبيب</div>
-          <div class="pill">دعم أولياء الأمور فورًا</div>
-        </section>
       </div>
 
-    <script type="module" src="js/auth.js"></script>
       <div id="toast" class="toast" role="status" aria-live="polite"></div>
     </main>
   </div>
