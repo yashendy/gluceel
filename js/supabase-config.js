@@ -16,8 +16,13 @@ const placeholderCreds = [
   'YOUR_SUPABASE_ANON_KEY'
 ].some((placeholder) => supabaseUrl === placeholder || supabaseAnonKey === placeholder);
 
-if (missingCreds || placeholderCreds) {
-  throw new Error('Supabase URL و anon key مطلوبة ولا يجب أن تكون قيمًا تجريبية.');
+const invalidFormat =
+  !supabaseUrl.startsWith('https://') ||
+  !supabaseUrl.includes('.supabase.co') ||
+  !supabaseAnonKey.startsWith('sb_');
+
+if (missingCreds || placeholderCreds || invalidFormat) {
+  throw new Error('Supabase URL و anon key مطلوبة ويجب أن تكون بصيغة صحيحة وليست قيماً تجريبية.');
 }
 
 // إنشاء عميل Supabase
