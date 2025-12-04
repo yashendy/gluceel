@@ -1,201 +1,18 @@
-/* css/style.css */
-@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
-
-:root {
-    --primary-color: #1877f2; /* أزرق فيسبوك */
-    --secondary-color: #42b72a; /* أخضر زر الإنشاء */
-    --bg-color: #f0f2f5;
-    --text-color: #1c1e21;
-    --primary-color: #1f74f0;
-    --secondary-color: #42b72a;
-    --accent-color: #ff7b54;
-    --bg-color: #f5f7fb;
-    --text-color: #152035;
-    --muted-color: #5f6b85;
-    --card-bg: #ffffff;
-    --border-color: #e6eaf2;
-    --shadow-soft: 0 10px 30px rgba(0, 33, 71, 0.08);
-}
-
-body {
-    font-family: 'Tajawal', sans-serif;
-    background-color: var(--bg-color);
-    margin: 0;
-    padding: 0;
-    direction: rtl; /* اتجاه عربي */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    direction: rtl;
-}
-
-/* ===== صفحة تسجيل الدخول الجديدة ===== */
-.login-page {
-    background: radial-gradient(circle at 20% 20%, rgba(31, 116, 240, 0.12), transparent 30%),
-                radial-gradient(circle at 80% 10%, rgba(255, 123, 84, 0.12), transparent 30%),
-                linear-gradient(135deg, #f7f9fe 0%, #eef2fb 100%);
-    min-height: 100vh;
-}
-
-/* الحاوية الرئيسية */
-.main-container {
-.login-shell {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 48px 24px 64px;
-    display: grid;
-    grid-template-columns: 1.1fr 0.9fr;
-    gap: 28px;
-    align-items: stretch;
-}
-
-.hero h1 {
-    margin: 10px 0 12px;
-    font-size: 2.2rem;
-    color: #0f1f3f;
-}
-
-.hero .lede {
-    margin: 0 0 22px;
-    font-size: 1.1rem;
-    color: var(--muted-color);
-    line-height: 1.7;
-}
-
-.brand-mark {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 14px;
-    background: #eaf2ff;
-    color: var(--primary-color);
-    border-radius: 16px;
-    font-weight: 700;
-    width: fit-content;
-    box-shadow: 0 4px 12px rgba(31, 116, 240, 0.12);
-}
-
-.hero-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 16px;
-}
-
-.hero-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 18px;
-    padding: 18px 20px;
-    box-shadow: var(--shadow-soft);
-}
-
-.hero-card h2 {
-    margin: 0 0 10px;
-    color: #0f1f3f;
-    font-size: 1.3rem;
-}
-
-.hero-card.info {
-    background: #0f1f3f;
-    color: #f8fbff;
-    border-color: transparent;
-}
-
-.hero-card.info h2 { color: #f8fbff; }
-
-.hero-card .note {
-    margin: 12px 0 0;
-    color: rgba(248, 251, 255, 0.85);
-    font-size: 0.95rem;
-}
-
-.bullet-list {
-    margin: 0;
-    padding-inline-start: 20px;
-    line-height: 1.7;
-    color: #2c3c58;
-}
-
-.hero-card.info .bullet-list { color: #d6def1; }
-
-.auth-panel {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    max-width: 1000px;
-    justify-content: center;
-}
-
-.auth-card {
-    width: 100%;
-    padding: 20px;
-    gap: 50px; /* مسافة بين النص والكارت */
-    max-width: 440px;
-    background: var(--card-bg);
-    border-radius: 18px;
-    padding: 28px;
-    box-shadow: var(--shadow-soft);
-    border: 1px solid var(--border-color);
-}
-
-/* الجزء اليمين: النصوص والتحفيز */
-.branding-section {
-    flex: 1;
-    max-width: 500px;
-.auth-header {
-    text-align: center;
-    margin-bottom: 18px;
-}
-
-.logo-text {
-    font-size: 3.5rem;
-    font-weight: bold;
-.auth-header h2 { margin: 8px 0 6px; }
-
-.subhead {
-    color: var(--muted-color);
-    margin: 0;
-}
-
-.badge {
-    display: inline-block;
-    margin: 0;
-    padding: 6px 12px;
-    background: #eaf2ff;
+@@ -43,57 +43,80 @@ body {
     color: var(--primary-color);
     margin-bottom: 10px;
-    border-radius: 999px;
-    font-weight: 700;
-    font-size: 0.9rem;
 }
 
 .motivation-text {
     font-size: 1.6rem;
     line-height: 1.6;
     color: var(--text-color);
-.status-banner {
-    display: none;
-    padding: 12px 14px;
-    border-radius: 12px;
-    margin-bottom: 14px;
-    background: #f0f4ff;
-    color: #0f3d91;
-    font-size: 0.98rem;
-    border: 1px solid #d8e2ff;
-    min-height: 20px;
 }
 
 /* الجزء اليسار: كارت الدخول */
 .login-section {
     flex: 0.8;
     max-width: 400px;
-.status-banner.error {
-    background: #fff5f5;
-    color: #b10000;
-    border-color: #ffc2c2;
-    display: block;
 }
 
 .login-card {
@@ -204,43 +21,46 @@ body {
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
     text-align: center;
-.login-form {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
 }
 
 .login-card input {
     width: 90%; /* عشان الحواف */
-.field {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    color: #0f1f3f;
-    font-weight: 700;
-}
-
-.field input {
-    width: 100%;
+    width: 100%; /* ملء عرض الحقل داخل الحاوية */
     padding: 14px 16px;
     margin-bottom: 15px;
     border: 1px solid #dddfe2;
     border-radius: 6px;
     font-size: 17px;
-    border: 1px solid #d7dbe5;
-    border-radius: 10px;
-    font-size: 1rem;
     font-family: 'Tajawal', sans-serif;
-    background: #f9fbff;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+}
+
+/* تنظيم الحقول لتجنب التكرار والارتباك */
+.form-field {
+    width: 100%;
+    text-align: right;
+    margin-bottom: 10px;
+}
+
+.form-field label {
+    display: block;
+    margin: 0 0 6px;
+    font-weight: 700;
+    color: #1c1e21;
+    font-size: 0.95rem;
+}
+
+.form-field small {
+    display: block;
+    margin: -8px 0 8px;
+    color: #606770;
+    font-size: 0.85rem;
 }
 
 .login-card input:focus {
-.field input:focus {
     border-color: var(--primary-color);
     outline: none;
     box-shadow: 0 0 0 2px #e7f3ff;
-    box-shadow: 0 0 0 3px rgba(31, 116, 240, 0.15);
 }
 
 .btn-login {
@@ -248,293 +68,14 @@ body {
     padding: 12px;
     background-color: var(--primary-color);
     color: white;
-.btn {
     border: none;
     border-radius: 6px;
     font-size: 20px;
     font-weight: bold;
     cursor: pointer;
     transition: 0.3s;
-    border-radius: 12px;
-    padding: 14px 18px;
-    font-size: 1.05rem;
-    font-weight: 800;
-    transition: transform 0.15s ease, box-shadow 0.2s ease;
-    width: 100%;
 }
 
 .btn-login:hover {
     background-color: #166fe5;
-.btn.primary {
-    background: linear-gradient(135deg, #1f74f0, #0e5ad8);
-    color: #fff;
-    box-shadow: 0 8px 20px rgba(15, 90, 216, 0.2);
-}
-
-.forgot-link {
-    display: block;
-    margin-top: 15px;
-.btn.primary:hover { transform: translateY(-1px); }
-.btn.primary:active { transform: translateY(0); }
-
-.links-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 12px;
-    gap: 10px;
-}
-
-.text-link {
-    color: var(--primary-color);
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 700;
-}
-
-.divider {
-    border-bottom: 1px solid #dadde1;
-    margin: 20px 0;
-.text-link:hover { text-decoration: underline; }
-
-.compact-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 10px;
-    margin-top: 18px;
-}
-
-.btn-create {
-    background-color: var(--secondary-color);
-    color: white;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 6px;
-    font-size: 17px;
-    font-weight: bold;
-.pill {
-    background: #f6f8fe;
-    border-radius: 999px;
-    padding: 10px 12px;
-    text-align: center;
-    font-weight: 700;
-    color: #1f2b46;
-    border: 1px solid #e0e6f5;
-}
-
-.toast {
-    display: none;
-    margin-top: 12px;
-    color: red;
-    text-align: center;
-}
-
-/* ===== صفحة التسجيل الجديدة ===== */
-.register-page {
-    background: radial-gradient(circle at 15% 20%, rgba(31, 116, 240, 0.12), transparent 28%),
-                radial-gradient(circle at 85% 10%, rgba(255, 123, 84, 0.1), transparent 30%),
-                linear-gradient(180deg, #f7f9fe 0%, #f1f4fb 100%);
-    min-height: 100vh;
-    display: flex;
-    align-items: stretch;
-    padding: 32px 18px 56px;
-}
-
-.register-shell {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1.05fr 0.95fr;
-    gap: 28px;
-    align-items: stretch;
-    width: 100%;
-}
-
-.register-hero {
-    background: var(--card-bg);
-    border-radius: 20px;
-    padding: 26px 28px;
-    border: 1px solid var(--border-color);
-    box-shadow: var(--shadow-soft);
-}
-
-.register-hero h1 {
-    margin: 12px 0 10px;
-    font-size: 2rem;
-    color: #0f1f3f;
-}
-
-.register-hero .lede {
-    margin: 0 0 18px;
-    color: var(--muted-color);
-    line-height: 1.7;
-}
-
-.feature-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 12px;
-}
-
-.feature-card {
-    background: #f8fbff;
-    border: 1px solid #e0e8f7;
-    border-radius: 14px;
-    padding: 14px 16px;
-}
-
-.feature-card h3 {
-    margin: 0 0 6px;
-    color: #0f1f3f;
-}
-
-.feature-card p {
-    margin: 0;
-    color: #2c3c58;
-    line-height: 1.6;
-}
-
-.policy-note {
-    margin-top: 14px;
-    background: #fff7ed;
-    border: 1px solid #ffd9b5;
-    color: #9b4d00;
-    padding: 10px 12px;
-    border-radius: 12px;
-    font-weight: 700;
-}
-
-.register-panel {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.register-card {
-    width: 100%;
-    max-width: 460px;
-    background: var(--card-bg);
-    border-radius: 20px;
-    padding: 28px;
-    border: 1px solid var(--border-color);
-    box-shadow: var(--shadow-soft);
-}
-
-.register-form {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
-
-.role-switch {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.role-label {
-    font-weight: 800;
-    color: #0f1f3f;
-}
-
-.role-options {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.role-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 12px;
-    border: 1px solid #d7dbe5;
-    border-radius: 12px;
-    background: #f9fbff;
-    cursor: pointer;
-    text-decoration: none;
-    font-weight: 700;
-    color: #1f2b46;
-}
-
-.role-pill input { accent-color: var(--primary-color); }
-
-.back-link {
-    display: inline-block;
-    margin-top: 6px;
-}
-
-.btn-create:hover {
-    background-color: #36a420;
-/* ===== التخطيط القديم لضمان التوافق مع صفحات التسجيل ===== */
-.main-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    max-width: 1000px;
-    width: 100%;
-    padding: 20px;
-    gap: 50px;
-    margin: 0 auto;
-    min-height: 90vh;
-}
-
-.branding-section { flex: 1; max-width: 500px; }
-.logo-text { font-size: 3.5rem; font-weight: bold; color: var(--primary-color); margin-bottom: 10px; }
-.motivation-text { font-size: 1.6rem; line-height: 1.6; color: var(--text-color); }
-.helper-card { background: white; border-radius: 10px; padding: 15px 18px; margin-top: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
-.helper-card h2 { margin: 0 0 10px; color: var(--primary-color); font-size: 1.3rem; }
-.helper-card ul { margin: 0; padding: 0 20px; color: #333; line-height: 1.6; }
-.login-section { flex: 0.8; max-width: 400px; }
-.login-card { background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1), 0 8px 16px rgba(0,0,0,0.1); text-align: center; }
-.login-card input { width: 90%; padding: 14px 16px; margin-bottom: 15px; border: 1px solid #dddfe2; border-radius: 6px; font-size: 17px; font-family: 'Tajawal', sans-serif; }
-.login-card input:focus { border-color: var(--primary-color); outline: none; box-shadow: 0 0 0 2px #e7f3ff; }
-.btn-login { width: 100%; padding: 12px; background-color: var(--primary-color); color: white; border: none; border-radius: 6px; font-size: 20px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-.btn-login:hover { background-color: #166fe5; }
-.forgot-link { display: block; margin-top: 15px; color: var(--primary-color); text-decoration: none; font-size: 14px; }
-.divider { border-bottom: 1px solid #dadde1; margin: 20px 0; }
-.btn-create { background-color: var(--secondary-color); color: white; padding: 12px 20px; border: none; border-radius: 6px; font-size: 17px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; }
-.btn-create:hover { background-color: #36a420; }
-
-/* تجاوُب */
-@media (max-width: 1024px) {
-    .login-shell { grid-template-columns: 1fr; padding: 32px 18px 48px; }
-    .auth-panel { order: -1; }
-    .hero h1 { font-size: 1.9rem; }
-
-    .register-shell { grid-template-columns: 1fr; }
-    .register-page { padding-top: 24px; }
-}
-
-/* التجاوب مع الموبايل */
-@media (max-width: 900px) {
-    .main-container {
-        flex-direction: column;
-        text-align: center;
-        gap: 20px;
-    }
-    .branding-section {
-        padding-bottom: 20px;
-    }
-    .logo-text {
-        font-size: 2.5rem;
-    }
-    .motivation-text {
-        font-size: 1.2rem;
-    }
-    .main-container { flex-direction: column; text-align: center; gap: 20px; }
-    .branding-section { padding-bottom: 20px; }
-    .logo-text { font-size: 2.5rem; }
-    .motivation-text { font-size: 1.2rem; }
-
-    .register-hero { text-align: center; }
-    .feature-grid { grid-template-columns: 1fr; }
-}
-
-@media (max-width: 640px) {
-    .auth-card { padding: 22px 18px; }
-    .links-row { flex-direction: column; align-items: flex-start; }
-
-    .register-card { padding: 22px 18px; }
-    .register-shell { gap: 18px; }
 }
