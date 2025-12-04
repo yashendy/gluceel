@@ -1,28 +1,53 @@
-@@ -48,57 +48,67 @@ async function handleSignUp(email, password, name, role) {
+// js/auth.js
 import { supabase } from './supabase-config.js';
 
+// عناصر الواجهة
 const loginForm = document.getElementById('loginForm');
-const registerForm = document.getElementById('registerForm');
-const toast = document.getElementById('toast');
-const statusBanner = document.getElementById('authStatus');
+const regForm = document.getElementById('registerForm');
+const logoutBtn = document.getElementById('logoutBtn');
+const toastEl = document.getElementById('toast');
 
-function showToast(message, isError = false) {
-  if (!toast) return;
-  toast.style.display = 'block';
-  toast.style.color = isError ? 'red' : 'green';
-  toast.textContent = message;
+// دالة عرض الرسائل
+const showToast = (msg, isError = false) => {
+  if (!toastEl) { alert(msg); return; }
+  toastEl.textContent = msg;
+  toastEl.style.backgroundColor = isError ? '#dc3545' : '#198754'; // أحمر للخطأ، أخضر للنجاح
+  toastEl.style.color = '#fff';
+  toastEl.style.padding = '10px';
+  toastEl.style.borderRadius = '6px';
+  toastEl.style.display = 'block';
+  setTimeout(() => toastEl.style.display = 'none', 3000);
+};
+
+// تحقق من البريد
+const isValidEmail = (value) => /.+@.+\..+/.test((value || '').trim());
+
+// التوجيه حسب الدور
+function routeByRole(role, status) {
+  // لو الحساب لسه معلق (Pending)
+  if (status === 'pending') {
+    document.body.innerHTML = `
+        <div style="text-align:center; margin-top:50px; font-family:'Tajawal', sans-serif;">
+            <h1>⏳ الحساب قيد المراجعة</h1>
+            <p>تم تسجيل طلبك بنجاح. سيقوم المسؤول بتفعيل حساب الطبيب قريباً.</p>
+            <a href="index.html" onclick="location.reload()">العودة</a>
+        </div>
+    `;
+    supabase.auth.signOut();
+    return;
+  }
+
+  // التوجيه الطبيعي
+  switch ((role || '').toLowerCase()) {
+    case 'admin':  location.replace('admin-doctors.html'); break;
+    case 'doctor': location.replace('doctor-dashboard.html'); break;
+    case 'parent': location.replace('parent.html'); break;
+    default:       location.replace('index.html');
+  }
 }
 
-function setStatus(message = '', isError = false) {
-  if (!statusBanner) return;
-  statusBanner.textContent = message;
-  statusBanner.classList.toggle('error', Boolean(isError));
-  statusBanner.style.display = message ? 'block' : 'none';
-}
-
-// تسجيل مستخدم جديد
-async function handleSignUp(email, password, name, role) {
-  try {
+/* ========== الوظائف الرئيسية ========== */
+@@ -48,57 +54,67 @@ async function handleSignUp(email, password, name, role) {
     // أ. التسجيل في Supabase Auth
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
@@ -36,17 +61,12 @@ async function handleSignUp(email, password, name, role) {
       console.log("تم التسجيل في Auth بنجاح، جاري الإضافة للجدول...", authData.user.id);
 
       // ب. الإضافة اليدوية في جدول users (الجزء المهم جداً)
-      // ب. الإضافة اليدوية في جدول users
       const { error: dbError } = await supabase.from('users').insert([
         {
           id: authData.user.id, // نأخذ نفس الـ ID
           email: email,
           name: name,
           role: role,
-          id: authData.user.id,
-          email,
-          name,
-          role,
           status: role === 'doctor' ? 'pending' : 'active'
         }
       ]);
@@ -69,8 +89,6 @@ async function handleSignUp(email, password, name, role) {
         // لا يمكن حذف المستخدم من Auth باستخدام anon key، لذا نظهر التنبيه فقط
         showToast(`فشل حفظ بيانات الجدول: ${hint}`, true);
         return;
-        console.error('خطأ في قاعدة البيانات:', dbError);
-        throw new Error('فشل حفظ بيانات الملف الشخصي. حاول مرة أخرى.');
       }
 
       showToast('تم إنشاء الحساب بنجاح! جاري الدخول...');
@@ -80,7 +98,6 @@ async function handleSignUp(email, password, name, role) {
       setTimeout(() => {
          checkAuth();
       }, 1500);
-      setTimeout(() => checkAuth(), 1200);
     }
 
   } catch (err) {
@@ -90,103 +107,83 @@ async function handleSignUp(email, password, name, role) {
 }
 
 // 2. تسجيل الدخول
-// تسجيل الدخول
 async function handleLogin(email, password) {
   try {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
 
     showToast('تم تسجيل الدخول!');
     checkAuth(); // التوجيه
 
-    checkAuth();
   } catch (err) {
     console.error(err);
     showToast('البريد الإلكتروني أو كلمة المرور غير صحيحة', true);
-  }
-}
+@@ -118,57 +134,64 @@ async function checkAuth() {
+      .single();
 
-async function fetchUserProfile(userId) {
-  const { data, error } = await supabase
-    .from('users')
-    .select('role,status')
-    .eq('id', userId)
-    .single();
-
-  if (error) {
-    console.error('فشل جلب بيانات المستخدم:', error);
-    showToast('تعذر التحقق من بيانات الحساب', true);
-    return null;
-  }
-
-  return data;
-}
-
-async function checkAuth() {
-  const { data: { session } } = await supabase.auth.getSession();
-  setStatus('جاري فحص جلسة الدخول...');
-  if (!session) {
-    setStatus('');
-    return;
-  }
-
-  const profile = await fetchUserProfile(session.user.id);
-  if (!profile) {
-    setStatus('تعذر تحديد دور حسابك.', true);
-    return;
-  }
-
-  if (profile.role === 'admin') {
-    setStatus('مرحباً أيها المشرف، سيتم تحويلك إلى لوحة مراجعة الأطباء');
-    window.location.href = 'admin-doctors.html';
-    return;
-  }
-
-  if (profile.role === 'doctor') {
-    if (profile.status !== 'active') {
-      const pendingMsg = 'تم تسجيل حسابك كطبيب وهو في انتظار التفعيل من الإدارة.';
-      showToast(pendingMsg, true);
-      setStatus(pendingMsg, true);
-      return;
+    if (user) {
+      // حفظنا الـ ID في المتصفح
+      sessionStorage.setItem('db_user_id', user.id);
+      
+      // التوجيه الذكي (عشان لو هو في صفحة صح مايعملش إعادة تحميل)
+      const path = location.pathname;
+      const isAuthPage = path.includes('index.html') || path.includes('register.html') || path === '/';
+      
+      if (isAuthPage) {
+          routeByRole(user.role, user.status);
+      }
+    } else {
+        console.warn("المستخدم مسجل دخول لكن غير موجود في الجدول!");
     }
-    setStatus('أهلاً بك دكتور، سيتم تحويلك إلى لوحة العيادة');
-    window.location.href = 'doctor-dashboard.html';
-    return;
   }
-
-  if (profile.role === 'parent') {
-    setStatus('مرحباً، سيتم تحويلك إلى لوحة ولي الأمر');
-    window.location.href = 'parent.html';
-    return;
-  }
-
-  showToast('لا يوجد توجيه مخصص لهذا الدور', true);
-  setStatus('لا يوجد توجيه مخصص لهذا الدور', true);
 }
 
-// ربط الفورمات
-if (loginForm) {
-  loginForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
-    await handleLogin(email, password);
-  });
-}
+/* ========== تفعيل الأزرار (Event Listeners) ========== */
 
-if (registerForm) {
-  registerForm.addEventListener('submit', async (e) => {
+// زر التسجيل
+if (regForm) {
+  regForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const name = document.getElementById('regName').value;
     const email = document.getElementById('regEmail').value;
-    const password = document.getElementById('regPassword').value;
-    const role = document.querySelector('input[name="role"]:checked').value;
+    const name = document.getElementById('regName').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const pass = document.getElementById('regPassword').value;
+    const roleEl = document.querySelector('input[name="role"]:checked');
+    const role = roleEl ? roleEl.value : 'parent';
 
-    await handleSignUp(email, password, name, role);
+    if (!name) return showToast('من فضلك أدخل الاسم الكامل.', true);
+    if (!isValidEmail(email)) return showToast('البريد الإلكتروني غير صحيح.', true);
+    if (!pass || pass.length < 6) return showToast('كلمة السر يجب أن تكون 6 أحرف على الأقل.', true);
+
+    handleSignUp(email, pass, name, role);
   });
 }
 
-// محاولة التوجيه التلقائي إذا كان المستخدم مسجلاً بالفعل
+// زر الدخول
+if (loginForm) {
+  loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass = document.getElementById('loginPassword').value;
+
+    if (!isValidEmail(email)) return showToast('اكتب بريدًا إلكترونيًا صالحًا.', true);
+    if (!pass) return showToast('من فضلك أدخل كلمة السر.', true);
+
+    handleLogin(email, pass);
+  });
+}
+
+// زر الخروج (لو موجود في الصفحة)
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', async () => {
+        await supabase.auth.signOut();
+        sessionStorage.clear();
+        window.location.href = 'index.html';
+    });
+}
+
+// تشغيل التحقق عند فتح الصفحة
 checkAuth();
