@@ -4,12 +4,20 @@ import { supabase } from './supabase-config.js';
 const loginForm = document.getElementById('loginForm');
 const registerForm = document.getElementById('registerForm');
 const toast = document.getElementById('toast');
+const statusBanner = document.getElementById('authStatus');
 
 function showToast(message, isError = false) {
   if (!toast) return;
   toast.style.display = 'block';
   toast.style.color = isError ? 'red' : 'green';
   toast.textContent = message;
+}
+
+function setStatus(message = '', isError = false) {
+  if (!statusBanner) return;
+  statusBanner.textContent = message;
+  statusBanner.classList.toggle('error', Boolean(isError));
+  statusBanner.style.display = message ? 'block' : 'none';
 }
 
 // تسجيل مستخدم جديد
@@ -119,31 +127,44 @@ async function fetchUserProfile(userId) {
 
 async function checkAuth() {
   const { data: { session } } = await supabase.auth.getSession();
-  if (!session) return;
+  setStatus('جاري فحص جلسة الدخول...');
+  if (!session) {
+    setStatus('');
+    return;
+  }
 
   const profile = await fetchUserProfile(session.user.id);
-  if (!profile) return;
+  if (!profile) {
+    setStatus('تعذر تحديد دور حسابك.', true);
+    return;
+  }
 
   if (profile.role === 'admin') {
+    setStatus('مرحباً أيها المشرف، سيتم تحويلك إلى لوحة مراجعة الأطباء');
     window.location.href = 'admin-doctors.html';
     return;
   }
 
   if (profile.role === 'doctor') {
     if (profile.status !== 'active') {
-      showToast('تم تسجيل حسابك كطبيب وهو في انتظار التفعيل من الإدارة.', true);
+      const pendingMsg = 'تم تسجيل حسابك كطبيب وهو في انتظار التفعيل من الإدارة.';
+      showToast(pendingMsg, true);
+      setStatus(pendingMsg, true);
       return;
     }
+    setStatus('أهلاً بك دكتور، سيتم تحويلك إلى لوحة العيادة');
     window.location.href = 'doctor-dashboard.html';
     return;
   }
 
   if (profile.role === 'parent') {
+    setStatus('مرحباً، سيتم تحويلك إلى لوحة ولي الأمر');
     window.location.href = 'parent.html';
     return;
   }
 
   showToast('لا يوجد توجيه مخصص لهذا الدور', true);
+  setStatus('لا يوجد توجيه مخصص لهذا الدور', true);
 }
 
 // ربط الفورمات
