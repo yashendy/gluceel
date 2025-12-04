@@ -10,6 +10,7 @@
 
     <div class="main-container">
         
+
         <div class="branding-section">
             <h1 class="logo-text">سكري كيدز 🩺</h1>
             <p class="motivation-text">
@@ -17,25 +18,43 @@
                 راقب قياسات السكر، نظم الوجبات الصحية،<br>
                 واحصل على تقارير ذكية لحياة آمنة ومستقبل أفضل.
             </p>
+
+            <div class="helper-card">
+                <h2>إرشادات الدخول</h2>
+                <ul>
+                    <li>المشرفون يتم توجيههم تلقائياً إلى لوحة مراجعة الأطباء.</li>
+                    <li>الأطباء المفعَّلون ينتقلون للوحة العيادة، بينما تظهر رسالة انتظار للتفعيل.</li>
+                    <li>أولياء الأمور ينتقلون مباشرة إلى لوحة المتابعة الخاصة بهم.</li>
+                </ul>
+            </div>
         </div>
 
         <div class="login-section">
             <div class="login-card">
+                <div id="authStatus" class="status-banner" aria-live="polite"></div>
+
                 <form id="loginForm">
                     <input type="email" id="loginEmail" placeholder="البريد الإلكتروني أو رقم الهاتف" required>
+                    <input type="email" id="loginEmail" placeholder="البريد الإلكتروني" required>
                     <input type="password" id="loginPassword" placeholder="كلمة السر" required>
                     
+
                     <button type="submit" class="btn-login">تسجيل الدخول</button>
                     
+
                     <a href="#" class="forgot-link">هل نسيت كلمة السر؟</a>
                     
+
                     <div class="divider"></div>
                     
+
                     <a href="register.html" class="btn-create">إنشاء حساب جديد</a>
                 </form>
             </div>
             
             <div id="toast" style="display:none; margin-top:10px; color:red;"></div>
+
+            <div id="toast" class="toast"></div>
         </div>
     </div>
 
