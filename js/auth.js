@@ -1,4 +1,4 @@
-import { supabase } from './supabase-config.js';
+import { supabase, supabaseUrl, supabaseAnonKey } from './supabase-config.js';
 
 const loginForm = document.getElementById('loginForm');
 const regForm = document.getElementById('registerForm');
@@ -29,6 +29,33 @@ const showDebug = (msg) => {
   }
   debugBox.style.display = 'block';
   debugBox.textContent = msg;
+};
+
+const renderStartupHints = () => {
+  if (!debugBox) return;
+
+  const hints = [];
+
+  if (location.protocol === 'file:') {
+    hints.push('لا تفتح الصفحات من الملف مباشرة. شغّلها عبر خادم http/https (مثل GitHub Pages).');
+  }
+
+  if (location.hostname !== 'localhost' && location.protocol === 'http:') {
+    hints.push('للنشر العام استخدم نطاق HTTPS حقيقي وأضفه في Supabase > Authentication > URL Configuration.');
+  }
+
+  if (supabaseAnonKey.length < 40 || !supabaseAnonKey.startsWith('sb_')) {
+    hints.push('مفتاح anon الظاهر قصير أو غير مكتمل. انسخ المفتاح الكامل من Project Settings > API > anon public.');
+  }
+
+  if (supabaseUrl.includes('localhost')) {
+    hints.push('Supabase URL يشير إلى localhost. يجب أن يكون نطاق مشروع Supabase (….supabase.co).');
+  }
+
+  if (hints.length) {
+    debugBox.style.display = 'block';
+    debugBox.textContent = `ملاحظات البيئة: ${hints.join(' | ')}`;
+  }
 };
 
 const isValidEmail = (value) => /.+@.+\..+/.test((value || '').trim());
@@ -226,6 +253,11 @@ if (loginForm) {
     handleLogin(email, pass);
   });
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderStartupHints();
+  ensureSupabaseReady();
+});
 
 if (logoutBtn) {
   logoutBtn.addEventListener('click', async () => {
