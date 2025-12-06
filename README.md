@@ -1,31 +1,34 @@
 # Gluceel Frontend
 
-Front-end pages for Supabase-backed authentication and registration flows.
+واجهات HTML بسيطة للاشتراك وتسجيل الدخول مع Supabase.
 
-## Supabase `users` table checklist
-Before testing registration/login, verify the `users` table matches the expected schema and row-level rules so Auth IDs are stored correctly.
+## جدول Supabase `users` باختصار (بالعربي)
+قبل ما تشغّل التسجيل/الدخول من الصفحات، تأكد أن جدول `users` مضبوط عشان الـ Auth يخزن الـ UUID الصحيح بدل أرقام عشوائية.
 
-### Column types
-| Column | Expected type | Notes |
+### أنواع الأعمدة المطلوبة
+| العمود | النوع | ملاحظات |
 | --- | --- | --- |
-| `id` | `uuid` | Must match the Auth user `id`; set as primary key and `not null`. |
-| `email` | `text` | Set `not null`; ideally unique to avoid duplicates. |
-| `name` | `text` | Optional display name. |
-| `role` | `text` | Default to `user` unless your app needs more roles. |
-| `status` | `text` | e.g., `active`, `pending`, or `disabled`. |
-| `created_at` | `timestamp with time zone` | Default `now()` so new rows auto-populate. |
+| `id` | `uuid` | لازم يطابق User ID اللي Supabase Auth بيرجعه؛ خليه Primary Key و`not null`. |
+| `email` | `text` | يفضل يكون `not null` و`unique` لتجنب التكرار. |
+| `name` | `text` | اسم عرض اختياري. |
+| `role` | `text` | افتراضيًا `user` لو مش محتاج أدوار إضافية. |
+| `status` | `text` | حالات مثل `active` / `pending` / `disabled`. |
+| `created_at` | `timestamp with time zone` | خلي الـ Default `now()` عشان الصف يضاف تلقائيًا.
 
-If any column currently uses `text` instead of `uuid` for `id`, change it to `uuid` and link it to the Auth users table (e.g., set a foreign key to `auth.users(id)`), then backfill existing rows to the proper UUIDs.
+> لو الـ `id` عندك حاليًا رقم أو `text` بدل `uuid`:
+> 1. من Table editor في Supabase غيّر نوع العمود لـ `uuid`.
+> 2. اربطه بـ Auth عن طريق Foreign Key على `auth.users(id)`.
+> 3. لو فيه بيانات قديمة، حدّثها بالـ UUID الصحيح لكل مستخدم (من جدول Auth أو بالـ API).
 
-### Row Level Security (RLS)
-Enable RLS on the `users` table and add policies such as:
-- **Select:** allow authenticated users to select their own row (`id = auth.uid()`).
-- **Insert:** allow authenticated users to insert a row only for themselves (`id = auth.uid()`).
-- **Update:** allow authenticated users to update only their own row.
+### سياسات Row Level Security (RLS)
+فعّل RLS على جدول `users` وأضاف سياسات واضحة:
+- **Select:** المستخدم يشوف صفه بس (`id = auth.uid()`).
+- **Insert:** المستخدم يضيف صف لنفسه بس (`id = auth.uid()`).
+- **Update:** المستخدم يعدّل صفه بس.
 
-Adjust policies if you need admin access (e.g., roles stored in JWT claims).
+لو عندك دور مدير (admin) مبني على Claim في الـ JWT، أضف سياسة منفصلة تسمح له بالوصول الأشمل.
 
-### Quick verification steps
-1. In Supabase table editor, confirm column types match the table above and that `id` is UUID.
-2. Confirm RLS is enabled and policies are present for select/insert/update.
-3. Save changes, then run registration/login flows from `index.html` and `register.html` to ensure new users appear with the correct UUID in `users`.
+### خطوات التحقق السريعة
+1. افتح جدول `users` وتأكد الأنواع زي الجدول اللي فوق وخصوصًا إن `id` = `uuid`.
+2. تأكد RLS مفعّل وفيه سياسات select/insert/update زي المذكور.
+3. بعد الحفظ، جرّب التسجيل/الدخول من `index.html` و`register.html` وشوف إن المستخدم الجديد بيتخزن بـ UUID صح في `users`.
