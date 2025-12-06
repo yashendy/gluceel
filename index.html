@@ -22,9 +22,16 @@
         <div class="login-section">
             <div class="login-card">
                 <form id="loginForm">
-                    <input type="email" id="loginEmail" placeholder="أدخل البريد الإلكتروني" required>
-                    <small style="color:#606770;display:block;margin:-8px 0 10px;">يجب استخدام نفس البريد المسجّل في Supabase.</small>
-                    <input type="password" id="loginPassword" placeholder="كلمة السر" required>
+                    <div class="form-field">
+                        <label for="loginEmail">البريد الإلكتروني</label>
+                        <input type="email" id="loginEmail" placeholder="أدخل البريد الإلكتروني" autocomplete="email" required>
+                        <small>يجب استخدام نفس البريد المسجّل في Supabase.</small>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="loginPassword">كلمة السر</label>
+                        <input type="password" id="loginPassword" placeholder="كلمة السر" autocomplete="current-password" required>
+                    </div>
 
                     <button type="submit" class="btn-login">تسجيل الدخول</button>
 

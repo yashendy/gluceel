@@ -65,13 +65,36 @@ body {
 }
 
 .login-card input {
-    width: 90%; /* عشان الحواف */
+    width: 100%; /* ملء عرض الحقل داخل الحاوية */
     padding: 14px 16px;
     margin-bottom: 15px;
     border: 1px solid #dddfe2;
     border-radius: 6px;
     font-size: 17px;
     font-family: 'Tajawal', sans-serif;
+    box-sizing: border-box;
+}
+
+/* تنظيم الحقول لتجنب التكرار والارتباك */
+.form-field {
+    width: 100%;
+    text-align: right;
+    margin-bottom: 10px;
+}
+
+.form-field label {
+    display: block;
+    margin: 0 0 6px;
+    font-weight: 700;
+    color: #1c1e21;
+    font-size: 0.95rem;
+}
+
+.form-field small {
+    display: block;
+    margin: -8px 0 8px;
+    color: #606770;
+    font-size: 0.85rem;
 }
 
 .login-card input:focus {

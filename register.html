@@ -25,10 +25,21 @@
                 <div class="divider"></div>
 
                 <form id="registerForm">
-                    <input type="text" id="regName" placeholder="الاسم الكامل" required>
-                    <input type="email" id="regEmail" placeholder="البريد الإلكتروني" required>
-                    <small style="color:#606770;display:block;margin:-8px 0 10px;">سيتم إرسال رابط التفعيل على هذا البريد.</small>
-                    <input type="password" id="regPassword" placeholder="كلمة السر الجديدة" required>
+                    <div class="form-field">
+                        <label for="regName">الاسم الكامل</label>
+                        <input type="text" id="regName" placeholder="الاسم الكامل" autocomplete="name" required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="regEmail">البريد الإلكتروني</label>
+                        <input type="email" id="regEmail" placeholder="البريد الإلكتروني" autocomplete="email" required>
+                        <small>سيتم إرسال رابط التفعيل على هذا البريد.</small>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="regPassword">كلمة السر</label>
+                        <input type="password" id="regPassword" placeholder="كلمة السر الجديدة" autocomplete="new-password" required>
+                    </div>
 
                     <div style="display:flex; gap:10px; margin-bottom:15px; justify-content:center;">
                         <label><input type="radio" name="role" value="parent" checked> ولي أمر</label>
