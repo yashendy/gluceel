@@ -24,7 +24,6 @@
 }
 
 .login-card input {
-    width: 90%; /* عشان الحواف */
     width: 100%; /* ملء عرض الحقل داخل الحاوية */
     padding: 14px 16px;
     margin-bottom: 15px;
