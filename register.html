@@ -1,4 +1,5 @@
-@@ -3,47 +3,61 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,14 +21,10 @@
         <div class="login-section">
             <div class="login-card">
                 <h2 style="margin-top:0;">حساب جديد</h2>
-                <p style="color:#606770; margin-bottom:15px;">الأمر سريع وسهل.</p>
+                 <p style="color:#606770; margin-bottom:15px;">الأمر سريع وسهل، وسيتم تسجيل الدخول مباشرة بدون تأكيد بريد.</p>
                 <div class="divider"></div>
 
                 <form id="registerForm">
-                    <input type="text" id="regName" placeholder="الاسم الكامل" required>
-                    <input type="email" id="regEmail" placeholder="البريد الإلكتروني" required>
-                    <input type="password" id="regPassword" placeholder="كلمة السر الجديدة" required>
-                    
                     <div class="form-field">
                         <label for="regName">الاسم الكامل</label>
                         <input type="text" id="regName" placeholder="الاسم الكامل" autocomplete="name" required>
@@ -36,7 +33,7 @@
                     <div class="form-field">
                         <label for="regEmail">البريد الإلكتروني</label>
                         <input type="email" id="regEmail" placeholder="البريد الإلكتروني" autocomplete="email" required>
-                        <small>سيتم إرسال رابط التفعيل على هذا البريد.</small>
+                        <small>التسجيل فوري بدون تأكيد بريد. سنسجّل دخولك مباشرة.</small>
                     </div>
 
                     <div class="form-field">
@@ -44,7 +41,24 @@
                         <input type="password" id="regPassword" placeholder="كلمة السر الجديدة" autocomplete="new-password" required>
                     </div>
 
-                    <div style="display:flex; gap:10px; margin-bottom:15px; justify-content:center;">
+                    <fieldset class="role-options">
+                        <legend>اختر نوع الحساب</legend>
                         <label><input type="radio" name="role" value="parent" checked> ولي أمر</label>
                         <label><input type="radio" name="role" value="doctor"> طبيب</label>
+                         </fieldset>
+                          <small class="help-text">حساب الطبيب أو المدير يبقى في حالة انتظار حتى يفعّله المسؤول.</small>
+
+                    <div class="action-buttons">
+                        <button type="submit" class="btn-create">تسجيل</button>
+                        <a href="index.html" class="btn-link">تسجيل الدخول</a>
                     </div>
+                </form>
+                  </div>
+             <div id="toast" style="display:none; margin-top:10px; color:red;"></div>
+        </div>
+    </div>
+
+    <script type="module" src="js/auth.js"></script>
+
+</body>
+</html>
