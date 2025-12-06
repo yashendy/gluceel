@@ -1,4 +1,42 @@
-@@ -43,57 +43,111 @@ body {
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
+
+:root {
+    --primary-color: #1877f2;
+    --secondary-color: #42b72a;
+    --bg-color: #f0f2f5;
+    --text-color: #1c1e21;
+}
+
+body {
+    font-family: 'Tajawal', sans-serif;
+    background-color: var(--bg-color);
+    margin: 0;
+    padding: 0;
+    direction: rtl;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.main-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 1000px;
+    width: 100%;
+    padding: 20px;
+    gap: 50px; /* مسافة بين النص والكارت */
+}
+
+.branding-section {
+    flex: 1;
+    max-width: 500px;
+}
+
+.logo-text {
+    font-size: 3.5rem;
+    font-weight: bold;
     color: var(--primary-color);
     margin-bottom: 10px;
 }
@@ -9,7 +47,6 @@
     color: var(--text-color);
 }
 
-/* الجزء اليسار: كارت الدخول */
 .login-section {
     flex: 0.8;
     max-width: 400px;
@@ -24,7 +61,7 @@
 }
 
 .login-card input {
-    width: 100%; /* ملء عرض الحقل داخل الحاوية */
+    width: 100%;
     padding: 14px 16px;
     margin-bottom: 15px;
     border: 1px solid #dddfe2;
@@ -34,7 +71,6 @@
     box-sizing: border-box;
 }
 
-/* تنظيم الحقول لتجنب التكرار والارتباك */
 .form-field {
     width: 100%;
     text-align: right;
@@ -110,7 +146,7 @@
     background-color: #166fe5;
 }
 
-@@ -105,42 +159,77 @@ body {
+@@ -105,42 +154,88 @@ body {
     font-size: 14px;
 }
 
@@ -153,6 +189,18 @@
     border-color: #c4c9d1;
 }
 
+.debug-info {
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    text-align: right;
+    direction: rtl;
+}
+
 .action-buttons {
     display: flex;
     gap: 10px;
@@ -160,7 +208,6 @@
     justify-content: space-between;
 }
 
-/* التجاوب مع الموبايل */
 @media (max-width: 900px) {
     .main-container {
         flex-direction: column;
