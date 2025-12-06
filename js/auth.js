@@ -12,6 +12,9 @@ const showToast = (msg, isError = false) => {
   if (!toastEl) { alert(msg); return; }
   toastEl.textContent = msg;
   toastEl.style.backgroundColor = isError ? '#dc3545' : '#198754'; // أحمر للخطأ، أخضر للنجاح
+  toastEl.style.color = '#fff';
+  toastEl.style.padding = '10px';
+  toastEl.style.borderRadius = '6px';
   toastEl.style.display = 'block';
   setTimeout(() => toastEl.style.display = 'none', 3000);
 };
