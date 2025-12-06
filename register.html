@@ -27,12 +27,15 @@
                 <form id="registerForm">
                     <input type="text" id="regName" placeholder="الاسم الكامل" required>
                     <input type="email" id="regEmail" placeholder="البريد الإلكتروني" required>
+                    <small style="color:#606770;display:block;margin:-8px 0 10px;">سيتم إرسال رابط التفعيل على هذا البريد.</small>
                     <input type="password" id="regPassword" placeholder="كلمة السر الجديدة" required>
-                    
+
                     <div style="display:flex; gap:10px; margin-bottom:15px; justify-content:center;">
                         <label><input type="radio" name="role" value="parent" checked> ولي أمر</label>
                         <label><input type="radio" name="role" value="doctor"> طبيب</label>
                     </div>
+
+                    <small style="color:#606770;display:block;margin:-5px 0 12px;">حساب الطبيب سيبقى في حالة انتظار حتى يفعّله المسؤول.</small>
 
                     <button type="submit" class="btn-create" style="width:100%;">تسجيل</button>
                 </form>

@@ -16,6 +16,9 @@ const showToast = (msg, isError = false) => {
   setTimeout(() => toastEl.style.display = 'none', 3000);
 };
 
+// تحقق من البريد
+const isValidEmail = (value) => /.+@.+\..+/.test((value || '').trim());
+
 // التوجيه حسب الدور
 function routeByRole(role, status) {
   // لو الحساب لسه معلق (Pending)
@@ -150,11 +153,15 @@ async function checkAuth() {
 if (regForm) {
   regForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    const name = document.getElementById('regName').value;
-    const email = document.getElementById('regEmail').value;
+    const name = document.getElementById('regName').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
     const pass = document.getElementById('regPassword').value;
     const roleEl = document.querySelector('input[name="role"]:checked');
     const role = roleEl ? roleEl.value : 'parent';
+
+    if (!name) return showToast('من فضلك أدخل الاسم الكامل.', true);
+    if (!isValidEmail(email)) return showToast('البريد الإلكتروني غير صحيح.', true);
+    if (!pass || pass.length < 6) return showToast('كلمة السر يجب أن تكون 6 أحرف على الأقل.', true);
 
     handleSignUp(email, pass, name, role);
   });
@@ -164,8 +171,11 @@ if (regForm) {
 if (loginForm) {
   loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    const email = document.getElementById('loginEmail').value;
+    const email = document.getElementById('loginEmail').value.trim();
     const pass = document.getElementById('loginPassword').value;
+
+    if (!isValidEmail(email)) return showToast('اكتب بريدًا إلكترونيًا صالحًا.', true);
+    if (!pass) return showToast('من فضلك أدخل كلمة السر.', true);
 
     handleLogin(email, pass);
   });
