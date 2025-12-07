@@ -1,9 +1,8 @@
-/* css/style.css */
 @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
 
 :root {
-    --primary-color: #1877f2; /* أزرق فيسبوك */
-    --secondary-color: #42b72a; /* أخضر زر الإنشاء */
+    --primary-color: #1877f2;
+    --secondary-color: #42b72a;
     --bg-color: #f0f2f5;
     --text-color: #1c1e21;
 }
@@ -13,14 +12,13 @@ body {
     background-color: var(--bg-color);
     margin: 0;
     padding: 0;
-    direction: rtl; /* اتجاه عربي */
+    direction: rtl;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
 }
 
-/* الحاوية الرئيسية */
 .main-container {
     display: flex;
     justify-content: center;
@@ -31,7 +29,6 @@ body {
     gap: 50px; /* مسافة بين النص والكارت */
 }
 
-/* الجزء اليمين: النصوص والتحفيز */
 .branding-section {
     flex: 1;
     max-width: 500px;
@@ -50,7 +47,6 @@ body {
     color: var(--text-color);
 }
 
-/* الجزء اليسار: كارت الدخول */
 .login-section {
     flex: 0.8;
     max-width: 400px;
@@ -65,13 +61,66 @@ body {
 }
 
 .login-card input {
-    width: 90%; /* عشان الحواف */
+    width: 100%;
     padding: 14px 16px;
     margin-bottom: 15px;
     border: 1px solid #dddfe2;
     border-radius: 6px;
     font-size: 17px;
     font-family: 'Tajawal', sans-serif;
+    box-sizing: border-box;
+}
+
+.form-field {
+    width: 100%;
+    text-align: right;
+    margin-bottom: 10px;
+}
+
+.form-field label {
+    display: block;
+    margin: 0 0 6px;
+    font-weight: 700;
+    color: #1c1e21;
+    font-size: 0.95rem;
+}
+
+.form-field small {
+    display: block;
+    margin: -8px 0 8px;
+    color: #606770;
+    font-size: 0.85rem;
+}
+
+.role-options {
+    border: 1px solid #dddfe2;
+    border-radius: 8px;
+    padding: 12px 14px;
+    text-align: right;
+    margin: 0 0 12px;
+}
+
+.role-options legend {
+    padding: 0 6px;
+    font-weight: 700;
+    color: #1c1e21;
+    font-size: 0.95rem;
+}
+
+.role-options label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 12px;
+    font-size: 0.95rem;
+    color: #1c1e21;
+}
+
+.help-text {
+    color: #606770;
+    display: block;
+    margin: -5px 0 12px;
+    font-size: 0.9rem;
 }
 
 .login-card input:focus {
@@ -127,7 +176,42 @@ body {
     background-color: #36a420;
 }
 
-/* التجاوب مع الموبايل */
+.btn-link {
+    display: inline-block;
+    padding: 12px 16px;
+    border: 1px solid #dddfe2;
+    border-radius: 6px;
+    color: #1c1e21;
+    background: #f8f9fa;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.btn-link:hover {
+    background: #eef1f4;
+    border-color: #c4c9d1;
+}
+
+.debug-info {
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    text-align: right;
+    direction: rtl;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: space-between;
+}
+
 @media (max-width: 900px) {
     .main-container {
         flex-direction: column;
@@ -142,5 +226,16 @@ body {
     }
     .motivation-text {
         font-size: 1.2rem;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .action-buttons .btn-create,
+    .action-buttons .btn-link {
+        width: 100%;
+        text-align: center;
     }
 }

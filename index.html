@@ -21,21 +21,33 @@
 
         <div class="login-section">
             <div class="login-card">
+                <h2 style="margin-top:0;">تسجيل الدخول</h2>
+                <p style="color:#606770; margin-bottom:15px;">سجّل دخولك مباشرة دون انتظار تأكيد بريد.</p>
+                <div class="divider"></div>
                 <form id="loginForm">
-                    <input type="email" id="loginEmail" placeholder="البريد الإلكتروني أو رقم الهاتف" required>
-                    <input type="password" id="loginPassword" placeholder="كلمة السر" required>
-                    
+                    <div class="form-field">
+                        <label for="loginEmail">البريد الإلكتروني</label>
+                        <input type="email" id="loginEmail" placeholder="أدخل البريد الإلكتروني" autocomplete="email" required>
+                        <small>يجب استخدام نفس البريد المسجّل في Supabase.</small>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="loginPassword">كلمة السر</label>
+                        <input type="password" id="loginPassword" placeholder="كلمة السر" autocomplete="current-password" required>
+                    </div>
+
                     <button type="submit" class="btn-login">تسجيل الدخول</button>
-                    
+
                     <a href="#" class="forgot-link">هل نسيت كلمة السر؟</a>
-                    
+
                     <div class="divider"></div>
-                    
+
                     <a href="register.html" class="btn-create">إنشاء حساب جديد</a>
                 </form>
             </div>
             
             <div id="toast" style="display:none; margin-top:10px; color:red;"></div>
+            <div id="debugInfo" class="debug-info" aria-live="polite" style="display:none;"></div>
         </div>
     </div>
 
