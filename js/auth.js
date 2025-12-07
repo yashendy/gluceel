@@ -1,10 +1,10 @@
 import { supabase, supabaseUrl, supabaseAnonKey } from './supabase-config.js';
 
-const loginForm = document.getElementById('loginForm');
-const regForm = document.getElementById('registerForm');
-const logoutBtn = document.getElementById('logoutBtn');
-const toastEl = document.getElementById('toast');
-const debugBox = document.getElementById('debugInfo');
+let loginForm = null;
+let regForm = null;
+let logoutBtn = null;
+let toastEl = null;
+let debugBox = null;
 
 const showToast = (msg, isError = false) => {
   if (!toastEl) {
@@ -212,42 +212,57 @@ async function checkAuth() {
   }
 }
 
-if (regForm) {
-  regForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const name = document.getElementById('regName').value.trim();
-    const email = document.getElementById('regEmail').value.trim();
-    const pass = document.getElementById('regPassword').value;
-    const roleEl = document.querySelector('input[name="role"]:checked');
-    const role = roleEl ? roleEl.value : 'parent';
+function initAuthUI() {
+  loginForm = document.getElementById('loginForm');
+  regForm = document.getElementById('registerForm');
+  logoutBtn = document.getElementById('logoutBtn');
+  toastEl = document.getElementById('toast');
+  debugBox = document.getElementById('debugInfo');
 
-    if (!name) return showToast('من فضلك أدخل الاسم الكامل.', true);
-    if (!isValidEmail(email)) return showToast('البريد الإلكتروني غير صحيح.', true);
-    if (!pass || pass.length < 6) return showToast('كلمة السر يجب أن تكون 6 أحرف على الأقل.', true);
+  if (!loginForm && !regForm) {
+    // لا توجد نماذج Auth في هذه الصفحة، نتجاهل الربط بدون أخطاء.
+    return;
+  }
 
-    handleSignUp(email, pass, name, role);
-  });
+  if (regForm) {
+    regForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('regName')?.value.trim();
+      const email = document.getElementById('regEmail')?.value.trim();
+      const pass = document.getElementById('regPassword')?.value;
+      const roleEl = document.querySelector('input[name="role"]:checked');
+      const role = roleEl ? roleEl.value : 'parent';
+
+      if (!name) return showToast('من فضلك أدخل الاسم الكامل.', true);
+      if (!isValidEmail(email)) return showToast('البريد الإلكتروني غير صحيح.', true);
+      if (!pass || pass.length < 6) return showToast('كلمة السر يجب أن تكون 6 أحرف على الأقل.', true);
+
+      handleSignUp(email, pass, name, role);
+    });
+  }
+
+  if (loginForm) {
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail')?.value.trim();
+      const pass = document.getElementById('loginPassword')?.value;
+
+      if (!isValidEmail(email)) return showToast('اكتب بريدًا إلكترونيًا صالحًا.', true);
+      if (!pass) return showToast('من فضلك أدخل كلمة السر.', true);
+
+      handleLogin(email, pass);
+    });
+  }
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', async () => {
+      await supabase.auth.signOut();
+      sessionStorage.clear();
+      window.location.href = 'index.html';
+    });
+  }
+
+  checkAuth();
 }
 
-if (loginForm) {
-  loginForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const email = document.getElementById('loginEmail').value.trim();
-    const pass = document.getElementById('loginPassword').value;
-
-    if (!isValidEmail(email)) return showToast('اكتب بريدًا إلكترونيًا صالحًا.', true);
-    if (!pass) return showToast('من فضلك أدخل كلمة السر.', true);
-
-    handleLogin(email, pass);
-  });
-}
-
-if (logoutBtn) {
-  logoutBtn.addEventListener('click', async () => {
-    await supabase.auth.signOut();
-    sessionStorage.clear();
-    window.location.href = 'index.html';
-  });
-}
-
-checkAuth();
+document.addEventListener('DOMContentLoaded', initAuthUI);
